@@ -9,7 +9,7 @@ void main() {
     // Verify InfoCard contents
     expect(find.text('2506534964'), findsOneWidget);
     expect(find.text('Adam Wahyu Syaputra'), findsOneWidget);
-    expect(find.text('PBP B'), findsOneWidget);
+    expect(find.text('PBP D'), findsOneWidget);
 
     // Verify ItemCard buttons
     expect(find.text('Lihat Portofolio'), findsOneWidget);
