@@ -5,6 +5,7 @@ void main() {
   runApp(const MyApp());
 }
 
+/// Root widget for the MyPortfolio mobile application.
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -12,6 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'MyPortfolio',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.indigo,

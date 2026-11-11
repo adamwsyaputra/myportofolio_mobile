@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Main menu page displaying the portfolio owner's identity and action buttons.
 class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
 
@@ -26,54 +27,65 @@ class MyHomePage extends StatelessWidget {
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                InfoCard(title: 'NPM', content: npm),
-                InfoCard(title: 'Name', content: nama),
-                InfoCard(title: 'Class', content: kelas),
-              ],
-            ),
-            const SizedBox(height: 16.0),
-            Center(
-              child: Column(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 16.0),
-                    child: Text(
-                      'Selamat datang di MyPortfolio Mobile!',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18.0,
-                      ),
-                    ),
-                  ),
-                  GridView.count(
-                    primary: true,
-                    padding: const EdgeInsets.all(20),
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    crossAxisCount: 3,
-                    shrinkWrap: true,
-                    children: items.map((ItemHomepage item) {
-                      return ItemCard(item);
-                    }).toList(),
-                  ),
+                  InfoCard(title: 'NPM', content: npm),
+                  InfoCard(title: 'Name', content: nama),
+                  InfoCard(title: 'Class', content: kelas),
                 ],
               ),
-            ),
-          ],
+              const SizedBox(height: 16.0),
+              Center(
+                child: Column(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(top: 16.0),
+                      child: Text(
+                        'Selamat datang di MyPortfolio Mobile!',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18.0,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 4.0),
+                    Text(
+                      'Computer Science Student @ Universitas Indonesia',
+                      style: TextStyle(
+                        color: Colors.grey[700],
+                        fontSize: 14.0,
+                      ),
+                    ),
+                    GridView.count(
+                      primary: false,
+                      padding: const EdgeInsets.all(20),
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      crossAxisCount: 3,
+                      shrinkWrap: true,
+                      children: items.map((ItemHomepage item) {
+                        return ItemCard(item);
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
+/// Reusable card widget displaying a labeled piece of owner information.
 class InfoCard extends StatelessWidget {
   final String title;
   final String content;
@@ -105,6 +117,7 @@ class InfoCard extends StatelessWidget {
   }
 }
 
+/// Data model representing an action button item on the homepage grid.
 class ItemHomepage {
   final String name;
   final IconData icon;
@@ -113,6 +126,7 @@ class ItemHomepage {
   ItemHomepage(this.name, this.icon, this.color);
 }
 
+/// Interactive card button widget that triggers a themed SnackBar when tapped.
 class ItemCard extends StatelessWidget {
   final ItemHomepage item;
 
@@ -130,6 +144,8 @@ class ItemCard extends StatelessWidget {
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
+                backgroundColor: item.color,
+                behavior: SnackBarBehavior.floating,
                 content: Text("Kamu telah menekan tombol ${item.name}!"),
               ),
             );
@@ -149,7 +165,10 @@ class ItemCard extends StatelessWidget {
                 Text(
                   item.name,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),
