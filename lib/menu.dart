@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 
+/// Main menu page displaying the portfolio owner's identity and action buttons.
 class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
 
-  final String npm = "2406000001";
-  final String nama = "Burhan";
-  final String kelas = "PBP A";
+  final String npm = "2506534964";
+  final String nama = "Adam Wahyu Syaputra";
+  final String kelas = "PBP D";
 
   final List<ItemHomepage> items = [
-    ItemHomepage("Lihat Proyek", Icons.folder),
-    ItemHomepage("Tambah Proyek", Icons.add_circle),
-    ItemHomepage("Logout", Icons.logout),
+    ItemHomepage("Lihat Portofolio", Icons.folder_special, Colors.blue),
+    ItemHomepage("Tambah Item", Icons.add_circle, Colors.green),
+    ItemHomepage("Logout", Icons.logout, Colors.red),
   ];
 
   @override
@@ -26,54 +27,65 @@ class MyHomePage extends StatelessWidget {
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                InfoCard(title: 'NPM', content: npm),
-                InfoCard(title: 'Name', content: nama),
-                InfoCard(title: 'Class', content: kelas),
-              ],
-            ),
-            const SizedBox(height: 16.0),
-            Center(
-              child: Column(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 16.0),
-                    child: Text(
-                      'Selamat datang di MyPortfolio Mobile!',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18.0,
-                      ),
-                    ),
-                  ),
-                  GridView.count(
-                    primary: true,
-                    padding: const EdgeInsets.all(20),
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    crossAxisCount: 3,
-                    shrinkWrap: true,
-                    children: items.map((ItemHomepage item) {
-                      return ItemCard(item);
-                    }).toList(),
-                  ),
+                  InfoCard(title: 'NPM', content: npm),
+                  InfoCard(title: 'Name', content: nama),
+                  InfoCard(title: 'Class', content: kelas),
                 ],
               ),
-            ),
-          ],
+              const SizedBox(height: 16.0),
+              Center(
+                child: Column(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(top: 16.0),
+                      child: Text(
+                        'Selamat datang di MyPortfolio Mobile!',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18.0,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 4.0),
+                    Text(
+                      'Computer Science Student @ Universitas Indonesia',
+                      style: TextStyle(
+                        color: Colors.grey[700],
+                        fontSize: 14.0,
+                      ),
+                    ),
+                    GridView.count(
+                      primary: false,
+                      padding: const EdgeInsets.all(20),
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      crossAxisCount: 3,
+                      shrinkWrap: true,
+                      children: items.map((ItemHomepage item) {
+                        return ItemCard(item);
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
+/// Reusable card widget displaying a labeled piece of owner information.
 class InfoCard extends StatelessWidget {
   final String title;
   final String content;
@@ -94,7 +106,10 @@ class InfoCard extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8.0),
-            Text(content),
+            Text(
+              content,
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),
@@ -102,13 +117,16 @@ class InfoCard extends StatelessWidget {
   }
 }
 
+/// Data model representing an action button item on the homepage grid.
 class ItemHomepage {
   final String name;
   final IconData icon;
+  final Color color;
 
-  ItemHomepage(this.name, this.icon);
+  ItemHomepage(this.name, this.icon, this.color);
 }
 
+/// Interactive card button widget that triggers a themed SnackBar when tapped.
 class ItemCard extends StatelessWidget {
   final ItemHomepage item;
 
@@ -117,14 +135,19 @@ class ItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Theme.of(context).colorScheme.secondary,
+      color: item.color,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
+        borderRadius: BorderRadius.circular(12),
         onTap: () {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
-              SnackBar(content: Text("Kamu telah menekan tombol ${item.name}!"))
+              SnackBar(
+                backgroundColor: item.color,
+                behavior: SnackBarBehavior.floating,
+                content: Text("Kamu telah menekan tombol ${item.name}!"),
+              ),
             );
         },
         child: Container(
@@ -142,7 +165,10 @@ class ItemCard extends StatelessWidget {
                 Text(
                   item.name,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),
