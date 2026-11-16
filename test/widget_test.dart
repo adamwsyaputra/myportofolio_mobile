@@ -2,7 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:myportofolio_mobile/main.dart';
 
 void main() {
-  testWidgets('Portfolio homepage displays owner info and triggers SnackBar',
+  testWidgets(
+      'Portfolio homepage displays owner info, triggers SnackBar, and navigates to ProjectFormPage',
       (WidgetTester tester) async {
     await tester.pumpWidget(const MyApp());
 
@@ -23,5 +24,10 @@ void main() {
       find.text('Kamu telah menekan tombol Lihat Portofolio!'),
       findsOneWidget,
     );
+
+    // Tap 'Tambah Item' and verify navigation to ProjectFormPage
+    await tester.tap(find.text('Tambah Item'));
+    await tester.pumpAndSettle();
+    expect(find.text('Add Project Form'), findsOneWidget);
   });
 }
