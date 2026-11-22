@@ -175,4 +175,29 @@ void main() {
       expect(find.text('Pilih tanggal mulai'), findsOneWidget);
     },
   );
+
+  testWidgets(
+    'Homepage and ExperienceFormPage render without overflow on 360x800 narrow phone viewport',
+    (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(360, 800);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+
+      await tester.pumpWidget(const MyApp());
+      await tester.pumpAndSettle();
+
+      expect(find.text('2506534964'), findsOneWidget);
+      expect(find.text('Adam Wahyu Syaputra'), findsOneWidget);
+      expect(find.text('PBP D'), findsOneWidget);
+
+      await _scrollAndTap(tester, find.text('Tambah Pengalaman'));
+      await tester.pumpAndSettle();
+      expect(find.byType(ExperienceFormPage), findsOneWidget);
+
+      final saveButton = find.widgetWithText(ElevatedButton, 'Simpan');
+      await tester.ensureVisible(saveButton);
+      await tester.pumpAndSettle();
+      expect(saveButton, findsOneWidget);
+    },
+  );
 }
