@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:myportofolio_mobile/screens/experience_form.dart';
 import 'package:myportofolio_mobile/screens/project_form.dart';
 
 /// Data model representing an action button item on the homepage grid.
@@ -34,13 +35,21 @@ class ItemCard extends StatelessWidget {
               ),
             );
 
-          if (item.name == "Tambah Item" ||
-              item.name == "Tambah Proyek" ||
+          if (item.name == "Tambah Proyek" ||
+              item.name == "Tambah Item" ||
               item.name == "Add Project") {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => const ProjectFormPage(),
+              ),
+            );
+          } else if (item.name == "Tambah Pengalaman" ||
+              item.name == "Add Experience") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ExperienceFormPage(),
               ),
             );
           }
