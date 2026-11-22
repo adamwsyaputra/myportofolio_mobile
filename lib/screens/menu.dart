@@ -12,7 +12,8 @@ class MyHomePage extends StatelessWidget {
 
   final List<ItemHomepage> items = [
     ItemHomepage("Lihat Portofolio", Icons.folder_special, Colors.blue),
-    ItemHomepage("Tambah Item", Icons.add_circle, Colors.green),
+    ItemHomepage("Tambah Proyek", Icons.add_circle, Colors.green),
+    ItemHomepage("Tambah Pengalaman", Icons.work_history, Colors.teal),
     ItemHomepage("Logout", Icons.logout, Colors.red),
   ];
 
@@ -37,13 +38,15 @@ class MyHomePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  InfoCard(title: 'NPM', content: npm),
-                  InfoCard(title: 'Name', content: nama),
-                  InfoCard(title: 'Class', content: kelas),
-                ],
+              IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(child: InfoCard(title: 'NPM', content: npm)),
+                    Expanded(child: InfoCard(title: 'Name', content: nama)),
+                    Expanded(child: InfoCard(title: 'Class', content: kelas)),
+                  ],
+                ),
               ),
               const SizedBox(height: 16.0),
               Center(
@@ -53,6 +56,7 @@ class MyHomePage extends StatelessWidget {
                       padding: EdgeInsets.only(top: 16.0),
                       child: Text(
                         'Selamat datang di MyPortfolio Mobile!',
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18.0,
@@ -62,6 +66,7 @@ class MyHomePage extends StatelessWidget {
                     const SizedBox(height: 4.0),
                     Text(
                       'Computer Science Student @ Universitas Indonesia',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.grey[700],
                         fontSize: 14.0,
@@ -69,10 +74,14 @@ class MyHomePage extends StatelessWidget {
                     ),
                     GridView.count(
                       primary: false,
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                        horizontal: 8,
+                      ),
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10,
-                      crossAxisCount: 3,
+                      crossAxisCount: 2,
+                      childAspectRatio: 1.2,
                       shrinkWrap: true,
                       children: items.map((ItemHomepage item) {
                         return ItemCard(item);
@@ -101,9 +110,9 @@ class InfoCard extends StatelessWidget {
     return Card(
       elevation: 2.0,
       child: Container(
-        width: MediaQuery.of(context).size.width / 3.5,
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 8.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               title,
@@ -113,6 +122,7 @@ class InfoCard extends StatelessWidget {
             Text(
               content,
               textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 13.0),
             ),
           ],
         ),

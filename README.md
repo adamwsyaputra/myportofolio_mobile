@@ -12,7 +12,27 @@ Aplikasi mobile portofolio pribadi berbasis **Flutter** yang dikembangkan untuk 
 
 * **Framework**: Flutter
 * **Bahasa Pemrograman**: Dart
-* **UI System**: Material Design 3
+* **UI System**: Material Design 3 lewat package `material_ui`
+
+---
+
+## Struktur Proyek & Fitur
+
+Aplikasi saat ini mencakup halaman beranda portofolio, navigation drawer `LeftDrawer`, form tambah proyek `ProjectFormPage`, dan form tambah pengalaman `ExperienceFormPage` dengan validasi terpisah di `FormValidators`.
+
+```text
+lib/
+├── main.dart
+├── screens/
+│   ├── menu.dart
+│   ├── project_form.dart
+│   └── experience_form.dart
+├── utils/
+│   └── form_validators.dart
+└── widgets/
+    ├── left_drawer.dart
+    └── project_card.dart
+```
 
 ---
 
@@ -32,8 +52,13 @@ flutter pub get
 ```
 
 ### 3. Jalankan Aplikasi
+Untuk menjalankan pada device atau emulator default:
 ```bash
 flutter run
+```
+Untuk menjalankan di browser Chrome sekaligus menguji navigasi drawer `Home` dan form pada ukuran layar ponsel:
+```bash
+flutter run -d chrome
 ```
 Untuk memeriksa kualitas kode dan menjalankan pengujian widget:
 ```bash
@@ -48,9 +73,9 @@ flutter test
 - [x] **Minggu 7**
   - [x] Tutorial 08: Basic Flutter
   - [x] Individual Assignment 7: Basic Flutter
-- [ ] **Minggu 8**
-  - [ ] Tutorial 09: Flutter Navigation & Input Form
-  - [ ] Individual Assignment 8: Flutter Navigation & Input Form
+- [x] **Minggu 8**
+  - [x] Tutorial 09: Flutter Navigation & Input Form
+  - [x] Individual Assignment 8: Flutter Navigation & Input Form
 - [ ] **Minggu 9**
   - [ ] Tutorial 10: Django-Flutter Authentication & Integration
   - [ ] Individual Assignment 9: Django-Flutter Authentication & Integration
@@ -117,3 +142,78 @@ Widget tree di Flutter adalah struktur hierarki berbentuk pohon yang menggambark
 #### Analisis Keterbatasan AI & Perbaikan Manual
 * **Pengaturan Scroll pada `GridView.count`**: Saat berkonsultasi mengenai penambahan `SingleChildScrollView` pada `body` supaya halaman tidak mengalami bottom overflow di layar kecil, saran awal sempat lupa mengatur `primary: false` pada `GridView.count` sehingga berpotensi bentrok antara scroll milik `SingleChildScrollView` dengan scroll bawaan `GridView`. Saya sesuaikan secara manual dengan mengubah `primary: false` dan `shrinkWrap: true` pada `GridView.count` di `lib/menu.dart`.
 * **Penyesuaian Widget Test**: Berkas bawaan `test/widget_test.dart` dari hasil inisialisasi proyek Flutter masih menguji aplikasi counter bawaan yang mencari angka `0` dan ikon tambah, sehingga gagal saat dijalankan pada aplikasi portofolio. Saya perbarui isi `test/widget_test.dart` secara manual untuk menguji keberadaan teks identitas pada `InfoCard`, ketiga tombol `ItemCard`, serta munculnya `SnackBar` saat tombol ditekan.
+
+---
+
+### Tugas 8
+
+#### 1. Perbedaan `Navigator.push()`, `Navigator.pushReplacement()`, dan `Navigator.pop()`
+`Navigator` di Flutter mengelola halaman sebagai tumpukan route atau stack. `Navigator.push()` menambahkan halaman baru di atas halaman yang sedang aktif sehingga halaman sebelumnya tetap tersimpan di bawahnya, sedangkan `Navigator.pushReplacement()` mengganti route paling atas saja dengan halaman baru tanpa membersihkan seluruh stack di bawahnya. Sementara itu, `Navigator.pop()` menghapus route atau dialog paling atas dari stack dan menampilkan halaman tepat di bawahnya. Pada proyek ini, kartu aksi di `ItemCard` memakai `Navigator.push()` untuk membuka `ProjectFormPage` dan `ExperienceFormPage` supaya user bisa kembali ke `MyHomePage` lewat tombol Back perangkat. Di `LeftDrawer`, opsi `Home` memakai `Navigator.pushReplacement()` menuju `MyHomePage` untuk langsung mengganti halaman form yang sedang aktif, sehingga halaman form dibuang dari stack dan user tidak kembali ke form saat menekan Back.
+
+---
+
+#### 2. Peran `Scaffold`, `AppBar`, dan `Drawer` untuk Konsistensi Halaman serta Contoh Warna Tema
+Memasang `Scaffold`, `AppBar`, dan komponen `LeftDrawer` yang sama di setiap halaman membuat struktur dasar aplikasi tetap seragam, di mana header selalu berada di atas, menu navigasi selalu muncul dari sisi kiri, dan area konten utama punya ruang yang terpisah rapi. Dengan susunan ini, user tidak bingung saat berpindah antara `MyHomePage`, `ProjectFormPage`, dan `ExperienceFormPage` karena pola navigasi dan posisinya selalu sama. Untuk menjaga konsistensi warna, kita mengambil warna utama dari `Theme.of(context).colorScheme.primary` yang berasal dari `ColorScheme.fromSeed` di `MyApp`, lalu memakainya bersama di `backgroundColor` milik `AppBar` pada `MyHomePage`, `ProjectFormPage`, dan `ExperienceFormPage`, di `DrawerHeader` pada `LeftDrawer`, serta pada tombol `Save` dan `Simpan`.
+
+---
+
+#### 3. Pemilihan Layout Form serta Peran Spacing dan Scroll saat Layar Terbatas
+Pada `ExperienceFormPage`, seluruh input disusun secara vertikal memakai `Column` di dalam `SingleChildScrollView` dengan properti `padding: const EdgeInsets.all(16.0)` untuk jarak tepi dan widget `SizedBox` untuk jarak antar field, berbeda dengan `ProjectFormPage` dan `MyHomePage` yang memakai widget `Padding` terpisah. Tata letak satu kolom vertikal dipilih supaya label, kolom input, dan pesan error mudah dibaca dari atas ke bawah pada layar HP yang sempit. Properti `padding` dan `SizedBox` menjaga tiap input tidak saling menempel sehingga area sentuhnya jelas dan nyaman ditekan. Ketika ukuran layar terbatas, toggle `Sedang Berlangsung` dimatikan sehingga field `Tanggal Selesai` muncul, atau saat keyboard virtual terbuka, `SingleChildScrollView` mencegah terjadinya bottom overflow dan memastikan seluruh input serta tombol `Simpan` tetap bisa di-scroll dan ditekan.
+
+---
+
+#### 4. Peran `GlobalKey<FormState>`, `validator`, dan `validate()` serta Alasan Jenis Input dan Keyboard Saja Belum Cukup
+`GlobalKey<FormState>` berperan sebagai pengenal unik yang menghubungkan widget `Form` dengan state internalnya agar kita bisa memicu pengecekan form dari tombol `Simpan`. Properti `validator` pada tiap `TextFormField` dan `FormField` berisi aturan pengecekan yang mengembalikan teks pesan error jika gagal atau `null` jika valid. Saat tombol `Simpan` ditekan, `_formKey.currentState!.validate()` menjalankan seluruh `validator` di dalam form dan mengembalikan nilai `bool`, yaitu `true` kalau semua validator mengembalikan `null` dan `false` kalau ada yang gagal, sehingga `AlertDialog` hanya dibuka ketika hasilnya `true`. Contoh nilai yang ditolak di form kita adalah input spasi saja seperti `"   "` pada `Judul Pengalaman`, teks `"bukan-url"` pada `URL Thumbnail`, atau `Tanggal Selesai` yang lebih awal dari `Tanggal Mulai`. Memilih tipe keyboard seperti `keyboardType: TextInputType.url` saja belum cukup karena hanya mengatur layout tombol virtual di perangkat mobile, tidak berpengaruh di Chrome desktop, dan tidak mencegah user mengetik spasi atau melakukan copy-paste URL sembarangan. Begitu juga memilih jenis widget input seperti `showDatePicker()` atau `maxLength` hanya membatasi format dasar input, tapi tidak bisa menegakkan aturan bisnis seperti melarang teks wajib yang kosong atau memastikan urutan `Tanggal Selesai` tidak sebelum `Tanggal Mulai` tanpa `validator`.
+
+---
+
+#### Pengungkapan Penggunaan AI Tugas 8
+
+* **Alat yang Digunakan**: Antigravity digunakan untuk membantu merancang rencana implementasi `ExperienceFormPage`, mengekstrak helper validasi di `lib/utils/form_validators.dart`, menghubungkan navigasi `LeftDrawer` dan `ItemCard`, serta menyusun dan memperbaiki widget test di `test/widget_test.dart`.
+* **Strategi Prompting**: Meminta perencanaan struktur file dan pembagian commit terlebih dahulu sebelum menulis kode, lalu mengeksekusi perubahan secara bertahap per fitur sambil memverifikasi setiap tahap lewat `flutter analyze` dan `flutter test`.
+
+#### Log Prompting Tugas 8
+
+**Prompt 1:**
+> Sekarang waktunya tugas 8. Apa aja requirements nya, planning aja dulu
+
+**Respons AI:**
+> Berikut adalah rencana lengkap (planning saja dulu) untuk mengerjakan Tugas 8 agar memenuhi seluruh checklist dan mengincar nilai 4.0 tanpa *overcomplicated*.
+>
+> **1. Apa Saja yang Harus Dilakukan di Tugas 8**
+> * **Halaman Formulir Baru di `lib/screens/`**:
+>   * Membuat halaman formulir baru sebagai `StatefulWidget` menggunakan `Form` dan `GlobalKey<FormState>` untuk salah satu bagian portofolio kustom Anda (bukan `Project`).
+>   * Minimal 3 input yang sesuai tipe data modelnya, dilengkapi validasi (menolak kosong / hanya spasi, memeriksa batas panjang, format URL, atau urutan tanggal jika ada).
+>   * Menggunakan `Scaffold` dan `AppBar` dengan tema yang konsisten dengan halaman utama, serta dibungkus widget penggulir (`SingleChildScrollView`) agar tetap bisa diakses di layar sempit atau saat keyboard muncul.
+> * **Navigasi dari Halaman Utama & `LeftDrawer`**:
+>   * Menambahkan kartu aksi baru di halaman utama (`lib/screens/menu.dart`) yang membuka formulir baru menggunakan `Navigator.push()` (supaya bisa kembali lewat tombol Back).
+>   * Menambahkan opsi baru di `LeftDrawer` (`lib/widgets/left_drawer.dart`) dengan tetap mempertahankan opsi *Home* dan *Add Project*, lalu memasang `LeftDrawer` yang sama di halaman formulir baru.
+> * **Validasi & Dialog Ringkasan**:
+>   * Tombol **Simpan** memanggil `_formKey.currentState!.validate()`. Jika tidak valid, tampilkan pesan kesalahan di kolom terkait.
+>   * Jika seluruh input valid, tampilkan ringkasan seluruh isian di `AlertDialog` melalui `showDialog()` dengan tombol `OK` / `Tutup` untuk menutup dialog dan mereset form.
+> * **Kualitas Kode, Pengujian, & Dokumentasi**:
+>   * `flutter analyze` bersih (`No issues found!`) dan pengujian berjalan baik.
+>   * Memperbarui `README.md` dengan bagian `### Tugas 8` (4 pertanyaan reflektif) + AI Disclosure tanpa menghapus jawaban Assignment 7.
+>
+> **2. Rancangan Teknis & Strategi Nilai 4.0 (Tetap Simpel)**
+>
+> Dari dua model kustom di backend Django Anda (`Experience` dan `Skill`), saya merekomendasikan `Experience` (`lib/screens/experience_form.dart`) karena atributnya secara alami cocok dengan seluruh tipe input & validasi yang dicontohkan di soal:
+>
+> | Field Model Experience | Widget Input di Flutter | Aturan Validasi |
+> | :--- | :--- | :--- |
+> | `title` (`max_length=255`) | `TextFormField` | Wajib diisi, bukan hanya spasi, maks. 255 karakter |
+> | `category` (6 pilihan) | `DropdownButtonFormField<String>` | `Full-Time`, `Part-Time`, `Internship`, `Research`, `Volunteer`, `Freelance` (pakai `initialValue`) |
+> | `description` | `TextFormField` (`maxLines: 4`) | Wajib diisi, bukan hanya spasi |
+> | `thumbnail` (URL opsional) | `TextFormField` (`TextInputType.url`) | Boleh kosong; jika diisi wajib URL valid (`http://` atau `https://`) |
+> | `is_ongoing` | `SwitchListTile` | Default `true`; jika dimatikan (`false`), pemilih Tanggal Selesai otomatis muncul |
+> | `started_at` & `ended_at` | `FormField<DateTime>` + `showDatePicker()` | Tanggal mulai wajib dipilih; jika `!is_ongoing`, tanggal selesai wajib dipilih dan tidak boleh sebelum tanggal mulai |
+>
+> **Poin ekstra yang simpel untuk mengincar nilai 4.0:**
+> * **Code Quality (4.0)**: Memisahkan helper validasi ke `lib/utils/form_validators.dart` agar bersih/modular, menambahkan docstrings (`///`) informatif, serta menyelaraskan warna `AppBar` dan `DrawerHeader` memakai `Theme.of(context).colorScheme.primary` (konsisten lintas semua halaman, sekaligus langsung jadi bukti konkret untuk Pertanyaan Reflektif #2).
+> * **Functionality & UX (4.0)**: Integrasi `showDatePicker()` di dalam `FormField<DateTime>` (sehingga pesan error tanggal ikut muncul saat tekan **Simpan**), toggle dinamis `SwitchListTile` untuk status Ongoing, dan validasi URL.
+> * **Automated Testing**: Memperluas `test/widget_test.dart` untuk menguji navigasi dari kartu & drawer, penolakan input tidak valid, serta munculnya `AlertDialog` ringkasan saat input valid.
+
+#### Analisis Keterbatasan AI & Perbaikan Manual Tugas 8
+* **Overflow pada `DrawerHeader` di `LeftDrawer`**: Saat pengujian widget drawer Tugas 8 dijalankan, ditemukan error `RenderFlex overflowed by 78 pixels` pada `Column` di dalam `DrawerHeader` karena ukuran teks judul 30 dan subtitle 15 bawaan dari implementasi Tutorial 09 melebihi tinggi tetap `DrawerHeader`. Ukuran font disesuaikan menjadi 20 dan 13 dengan `MainAxisAlignment.center` supaya aman di layar sempit maupun lingkungan test.
+* **Sinkronisasi Scroll dan Floating `SnackBar` pada Widget Test**: Pengujian awal di `test/widget_test.dart` sempat gagal karena `tester.ensureVisible()` tidak otomatis menjalankan `pumpAndSettle()` sehingga koordinat sentuhan masih membaca posisi scroll lama, serta floating `SnackBar` navigasi dari halaman utama sempat menutupi tombol `Simpan`. Test diperbaiki dengan menambahkan helper `_scrollAndTap` yang selalu menjalankan `pumpAndSettle()` setelah scroll dan menyembunyikan `SnackBar` navigasi sebelum interaksi tombol form.
+* **Overflow `InfoCard` pada Layar HP Sempit**: Pengujian widget awal dari AI hanya memakai ukuran layar default sehingga bug layout pada layar HP sempat terlewat. Saat aplikasi diuji langsung di Chrome pada viewport `390x844`, muncul error `RenderFlex overflowed by 0.245 pixels on the right` pada `Row` ketiga `InfoCard` di `lib/screens/menu.dart` karena lebar kartu sebelumnya masih dihitung lewat `MediaQuery.of(context).size.width / 3.5` tanpa memperhitungkan margin bawaan `Card`, membuat angka NPM ikut terpotong dan tinggi kartu tidak rata. Saya perbaiki dengan membungkus ketiga `InfoCard` memakai `Expanded` di dalam `IntrinsicHeight` dan `Row` dengan `CrossAxisAlignment.stretch`, menghapus lebar fixed tersebut, menyesuaikan padding dan ukuran font kartu serta `childAspectRatio: 1.2` pada `GridView.count`, lalu menambahkan widget test khusus viewport `360x800` di `test/widget_test.dart` supaya masalah overflow serupa langsung tertangkap saat pengujian.
