@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:myportofolio_mobile/utils/form_validators.dart';
 import 'package:myportofolio_mobile/widgets/left_drawer.dart';
 
 /// Form page allowing users to input and preview new project details.
@@ -28,6 +29,8 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
     return Scaffold(
       appBar: AppBar(
         title: const Center(
@@ -35,7 +38,7 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
             'Add Project Form',
           ),
         ),
-        backgroundColor: Colors.indigo,
+        backgroundColor: primaryColor,
         foregroundColor: Colors.white,
       ),
       drawer: const LeftDrawer(),
@@ -146,6 +149,7 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
+                  keyboardType: TextInputType.url,
                   decoration: InputDecoration(
                     hintText: "Project URL (optional)",
                     labelText: "Project Link",
@@ -158,6 +162,11 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
                       _projectLink = value!;
                     });
                   },
+                  validator: (String? value) =>
+                      FormValidators.validateOptionalUrl(
+                    value,
+                    fieldLabel: 'Project Link',
+                  ),
                 ),
               ),
 
@@ -168,7 +177,7 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(Colors.indigo),
+                      backgroundColor: WidgetStateProperty.all(primaryColor),
                     ),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
