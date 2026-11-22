@@ -20,20 +20,21 @@ class LeftDrawer extends StatelessWidget {
             ),
             child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   'My Portfolio',
                   style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 8),
                 Text(
                   'Explore personal projects and experiences!',
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 13,
                     color: Colors.white,
                   ),
                 ),
