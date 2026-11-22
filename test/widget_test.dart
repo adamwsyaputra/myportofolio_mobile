@@ -5,6 +5,12 @@ import 'package:myportofolio_mobile/screens/experience_form.dart';
 import 'package:myportofolio_mobile/screens/menu.dart';
 import 'package:myportofolio_mobile/screens/project_form.dart';
 
+Future<void> _scrollAndTap(WidgetTester tester, Finder finder) async {
+  await tester.ensureVisible(finder);
+  await tester.pumpAndSettle();
+  await tester.tap(finder);
+}
+
 void main() {
   testWidgets(
     'Homepage displays owner info, 4 distinct cards, and triggers SnackBar',
@@ -20,8 +26,7 @@ void main() {
       expect(find.text('Tambah Pengalaman'), findsOneWidget);
       expect(find.text('Logout'), findsOneWidget);
 
-      await tester.ensureVisible(find.text('Lihat Portofolio'));
-      await tester.tap(find.text('Lihat Portofolio'));
+      await _scrollAndTap(tester, find.text('Lihat Portofolio'));
       await tester.pump();
       expect(
         find.text('Kamu telah menekan tombol Lihat Portofolio!'),
@@ -36,8 +41,7 @@ void main() {
       await tester.pumpWidget(const MyApp());
 
       // Navigate to ProjectFormPage via action card
-      await tester.ensureVisible(find.text('Tambah Proyek'));
-      await tester.tap(find.text('Tambah Proyek'));
+      await _scrollAndTap(tester, find.text('Tambah Proyek'));
       await tester.pumpAndSettle();
       expect(find.byType(ProjectFormPage), findsOneWidget);
 
@@ -47,8 +51,7 @@ void main() {
       expect(find.byType(MyHomePage), findsOneWidget);
 
       // Navigate to ExperienceFormPage via action card
-      await tester.ensureVisible(find.text('Tambah Pengalaman'));
-      await tester.tap(find.text('Tambah Pengalaman'));
+      await _scrollAndTap(tester, find.text('Tambah Pengalaman'));
       await tester.pumpAndSettle();
       expect(find.byType(ExperienceFormPage), findsOneWidget);
 
@@ -78,8 +81,13 @@ void main() {
     (WidgetTester tester) async {
       await tester.pumpWidget(const MyApp());
 
-      await tester.ensureVisible(find.text('Tambah Pengalaman'));
-      await tester.tap(find.text('Tambah Pengalaman'));
+      await _scrollAndTap(tester, find.text('Tambah Pengalaman'));
+      await tester.pumpAndSettle();
+
+      // Dismiss the navigation SnackBar so it does not obscure form actions
+      ScaffoldMessenger.of(
+        tester.element(find.byType(ExperienceFormPage)),
+      ).hideCurrentSnackBar();
       await tester.pumpAndSettle();
 
       // Enter whitespace-only required fields and invalid URL
@@ -98,13 +106,11 @@ void main() {
 
       // Turn off ongoing toggle to verify end date requirement as well
       final switchFinder = find.byType(SwitchListTile);
-      await tester.ensureVisible(switchFinder);
-      await tester.tap(switchFinder);
+      await _scrollAndTap(tester, switchFinder);
       await tester.pumpAndSettle();
 
       final saveButton = find.widgetWithText(ElevatedButton, 'Simpan');
-      await tester.ensureVisible(saveButton);
-      await tester.tap(saveButton);
+      await _scrollAndTap(tester, saveButton);
       await tester.pumpAndSettle();
 
       expect(find.text('Judul pengalaman tidak boleh kosong.'), findsOneWidget);
@@ -121,8 +127,7 @@ void main() {
       expect(find.byType(AlertDialog), findsNothing);
 
       // Toggle back to ongoing
-      await tester.ensureVisible(switchFinder);
-      await tester.tap(switchFinder);
+      await _scrollAndTap(tester, switchFinder);
       await tester.pumpAndSettle();
 
       // Fill valid details
@@ -140,16 +145,13 @@ void main() {
       );
 
       // Pick start date
-      final startDateFinder = find.text('Pilih tanggal mulai');
-      await tester.ensureVisible(startDateFinder);
-      await tester.tap(startDateFinder);
+      await _scrollAndTap(tester, find.text('Pilih tanggal mulai'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('OK'));
       await tester.pumpAndSettle();
 
       // Submit valid form
-      await tester.ensureVisible(saveButton);
-      await tester.tap(saveButton);
+      await _scrollAndTap(tester, saveButton);
       await tester.pumpAndSettle();
 
       expect(find.byType(AlertDialog), findsOneWidget);
