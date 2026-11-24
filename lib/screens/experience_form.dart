@@ -36,7 +36,9 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
     required bool isStart,
   }) async {
     final now = DateTime.now();
-    final initialDate = isStart ? (_startDate ?? now) : (_endDate ?? _startDate ?? now);
+    final initialDate = isStart
+        ? (_startDate ?? now)
+        : (_endDate ?? _startDate ?? now);
     final picked = await showDatePicker(
       context: context,
       initialDate: initialDate,
@@ -79,8 +81,9 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
       initialValue: selectedDate,
       validator: (_) => validator(selectedDate),
       builder: (field) {
-        final displayText =
-            selectedDate != null ? FormValidators.formatDate(selectedDate) : placeholder;
+        final displayText = selectedDate != null
+            ? FormValidators.formatDate(selectedDate)
+            : placeholder;
         return InkWell(
           onTap: () => _pickDate(field: field, isStart: isStart),
           child: InputDecorator(
@@ -132,7 +135,9 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                 const SizedBox(height: 4),
                 Text('Thumbnail: $thumbnailText'),
                 const SizedBox(height: 4),
-                Text('Tanggal Mulai: ${FormValidators.formatDate(_startDate!)}'),
+                Text(
+                  'Tanggal Mulai: ${FormValidators.formatDate(_startDate!)}',
+                ),
                 const SizedBox(height: 4),
                 Text('Status: $statusText'),
               ],
@@ -158,9 +163,7 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-          child: Text('Tambah Pengalaman'),
-        ),
+        title: const Center(child: Text('Tambah Pengalaman')),
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
       ),
@@ -279,7 +282,9 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
                 title: const Text('Sedang Berlangsung'),
-                subtitle: const Text('Aktifkan jika pengalaman ini masih berjalan'),
+                subtitle: const Text(
+                  'Aktifkan jika pengalaman ini masih berjalan',
+                ),
                 value: _isOngoing,
                 onChanged: (value) {
                   setState(() {

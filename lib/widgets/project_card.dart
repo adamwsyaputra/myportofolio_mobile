@@ -1,6 +1,10 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:myportofolio_mobile/screens/experience_form.dart';
 import 'package:myportofolio_mobile/screens/project_form.dart';
+import 'package:myportofolio_mobile/screens/project_list_screen.dart';
+import 'package:myportofolio_mobile/services/auth_state.dart';
+import 'package:myportofolio_mobile/widgets/auth_guard.dart';
+import 'package:provider/provider.dart';
 
 /// Data model representing an action button item on the homepage grid.
 class ItemHomepage {
@@ -24,28 +28,66 @@ class ItemCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () {
-          ScaffoldMessenger.of(context)
+        onTap: () async {
+          final messenger = ScaffoldMessenger.of(context);
+
+          if (item.name == 'Logout') {
+            final authState = context.read<AuthState>();
+            if (authState.isLoggedIn) {
+              await authState.logout();
+              messenger
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  SnackBar(
+                    backgroundColor: item.color,
+                    behavior: SnackBarBehavior.floating,
+                    content: const Text('Berhasil logout!'),
+                  ),
+                );
+            } else {
+              messenger
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  SnackBar(
+                    backgroundColor: item.color,
+                    behavior: SnackBarBehavior.floating,
+                    content: const Text('Kamu belum login.'),
+                  ),
+                );
+            }
+            return;
+          }
+
+          messenger
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
                 backgroundColor: item.color,
                 behavior: SnackBarBehavior.floating,
-                content: Text("Kamu telah menekan tombol ${item.name}!"),
+                content: Text('Kamu telah menekan tombol ${item.name}!'),
               ),
             );
 
-          if (item.name == "Tambah Proyek" ||
-              item.name == "Tambah Item" ||
-              item.name == "Add Project") {
+          if (item.name == 'Lihat Portofolio' ||
+              item.name == 'Lihat Proyek' ||
+              item.name == 'View Projects') {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const ProjectFormPage(),
+                builder: (context) => const ProjectListScreen(),
               ),
             );
-          } else if (item.name == "Tambah Pengalaman" ||
-              item.name == "Add Experience") {
+          } else if (item.name == 'Tambah Proyek' ||
+              item.name == 'Tambah Item' ||
+              item.name == 'Add Project') {
+            final loggedIn = await ensureLoggedIn(context);
+            if (!loggedIn || !context.mounted) return;
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ProjectFormPage()),
+            );
+          } else if (item.name == 'Tambah Pengalaman' ||
+              item.name == 'Add Experience') {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -60,11 +102,7 @@ class ItemCard extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  item.icon,
-                  color: Colors.white,
-                  size: 30.0,
-                ),
+                Icon(item.icon, color: Colors.white, size: 30.0),
                 const Padding(padding: EdgeInsets.all(3)),
                 Text(
                   item.name,
