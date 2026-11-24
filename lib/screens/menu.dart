@@ -23,10 +23,7 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           'MyPortfolio',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
         iconTheme: const IconThemeData(color: Colors.white),
@@ -42,9 +39,15 @@ class MyHomePage extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Expanded(child: InfoCard(title: 'NPM', content: npm)),
-                    Expanded(child: InfoCard(title: 'Name', content: nama)),
-                    Expanded(child: InfoCard(title: 'Class', content: kelas)),
+                    Expanded(
+                      child: InfoCard(title: 'NPM', content: npm),
+                    ),
+                    Expanded(
+                      child: InfoCard(title: 'Name', content: nama),
+                    ),
+                    Expanded(
+                      child: InfoCard(title: 'Class', content: kelas),
+                    ),
                   ],
                 ),
               ),
@@ -67,10 +70,7 @@ class MyHomePage extends StatelessWidget {
                     Text(
                       'Computer Science Student @ Universitas Indonesia',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.grey[700],
-                        fontSize: 14.0,
-                      ),
+                      style: TextStyle(color: Colors.grey[700], fontSize: 14.0),
                     ),
                     GridView.count(
                       primary: false,
@@ -114,10 +114,7 @@ class InfoCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              title,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
+            Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8.0),
             Text(
               content,
